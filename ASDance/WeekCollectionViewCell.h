@@ -11,4 +11,5 @@
 @interface WeekCollectionViewCell : UICollectionViewCell
 @property (strong, nonatomic) IBOutlet UILabel *weekLab;
 
+- (void)resetData;
 @end

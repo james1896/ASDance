@@ -15,4 +15,8 @@
     // Initialization code
 }
 
+- (void)resetData{
+    self.weekLab.text = @"";
+}
+
 @end

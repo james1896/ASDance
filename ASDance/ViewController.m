@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "WeekCollectionViewCell.h"
 
-static int course_days = 10;
+static int course_days = 15;
 
 @interface ViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>{
 
@@ -17,8 +17,7 @@ static int course_days = 10;
     
 }
 
-
-
+@property (nonatomic,strong) NSArray *weekArray;
 @property (nonatomic,strong) NSArray *dataArray;
 @end
 
@@ -28,11 +27,28 @@ static int course_days = 10;
 {
     mainCollectionView = nil;
 }
+
 - (NSArray *)dataArray{
     if(!_dataArray){
-       _dataArray = [self getAWeekDate];
+        _dataArray = @[@[@"a",@"s",@"a",@"d"],
+                       @[@"1",@"hello",@"a",@"w"],
+                       @[@"q",@"r",@"a",@"t"],
+                       @[@"y",@"u",@"a",@"i"],
+                       @[@"what",@"m",@"a",@"o"],
+                       @[@"h",@"g",@"a",@"p"],
+                       @[@"j",@"are",@"a",@"k"],
+                       @[@"l",@"s",@"a",@""],
+                       @[@"b",@"z",@"a",@"x"],
+                       @[@"v",@"you",@"a",@"b"]];
     }
     return _dataArray;
+}
+
+- (NSArray *)weekArray{
+    if(!_weekArray){
+       _weekArray = [self getAWeekDate];
+    }
+    return _weekArray;
 }
 
 - (void)viewDidLoad {
@@ -48,7 +64,7 @@ static int course_days = 10;
     //设置headerView的尺寸大小
 //    layout.headerReferenceSize = CGSizeMake(self.view.frame.size.width, 100);
     //该方法也可以设置itemSize
-    layout.itemSize =CGSizeMake((self.view.frame.size.width)/7, (self.view.frame.size.width)/7);
+    layout.itemSize =CGSizeMake(70, 290);
     layout.minimumLineSpacing =0;
     layout.minimumInteritemSpacing = 0;
     
@@ -80,17 +96,26 @@ static int course_days = 10;
 //每个section的item个数
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 5;
+    return 1;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     
     WeekCollectionViewCell *cell = (WeekCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"WeekCollectionViewCell" forIndexPath:indexPath];
-   
+   [cell resetData];
+    
     if(indexPath.row == 0){
-        cell.weekLab.text = self.dataArray[indexPath.section];
+        cell.weekLab.text = self.weekArray[indexPath.section];
         cell.backgroundColor = [UIColor yellowColor];
+    }else{
+        if(indexPath.section >= self.dataArray.count){
+        cell.weekLab.text = @"无数据";
+        }else{
+            NSArray *dataArr = self.dataArray[indexPath.section];
+            cell.weekLab.text = dataArr[indexPath.row-1];
+        }
+        
     }
   
     
