@@ -10,10 +10,12 @@
 #import "WeekCollectionViewCell.h"
 
 static int course_days = 15;
+static int header_height = 350;
 
-@interface ViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>{
+@interface ViewController ()<UITableViewDelegate,UITableViewDataSource,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>{
 
     UICollectionView *mainCollectionView;
+    UITableView     *tabView;
     
 }
 
@@ -64,13 +66,13 @@ static int course_days = 15;
     //设置headerView的尺寸大小
 //    layout.headerReferenceSize = CGSizeMake(self.view.frame.size.width, 100);
     //该方法也可以设置itemSize
-    layout.itemSize =CGSizeMake(70, 290);
+    layout.itemSize =CGSizeMake(80, header_height);
     layout.minimumLineSpacing =0;
     layout.minimumInteritemSpacing = 0;
     
     //2.初始化collectionView
-    mainCollectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
-    [self.view addSubview:mainCollectionView];
+    mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, header_height) collectionViewLayout:layout];
+//    [self.view addSubview:mainCollectionView];
     mainCollectionView.backgroundColor = [UIColor clearColor];
     
     //3.注册collectionViewCell
@@ -84,19 +86,43 @@ static int course_days = 15;
     //4.设置代理
     mainCollectionView.delegate = self;
     mainCollectionView.dataSource = self;
+    
+    
+    
+    //tabview
+    tabView = [[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    tabView.delegate = self;
+    tabView.dataSource = self;
+    tabView.tableHeaderView = mainCollectionView;
+    [self.view addSubview:tabView];
+}
+#pragma mark- tabview 代理方法
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return 4;
 }
 
-#pragma mark collectionView代理方法
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 65;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+    cell.textLabel.text = [NSString stringWithFormat:@"第%ld节课",indexPath.row+1];
+    return cell;
+}
+
+#pragma mark- collectionView代理方法
 //返回section个数
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return course_days;
+    return 1;
 }
 
 //每个section的item个数
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 1;
+    return course_days;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -105,20 +131,20 @@ static int course_days = 15;
     WeekCollectionViewCell *cell = (WeekCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"WeekCollectionViewCell" forIndexPath:indexPath];
    [cell resetData];
     
-    if(indexPath.row == 0){
-        cell.weekLab.text = self.weekArray[indexPath.section];
-        cell.backgroundColor = [UIColor yellowColor];
-    }else{
-        if(indexPath.section >= self.dataArray.count){
-        cell.weekLab.text = @"无数据";
-        }else{
-            NSArray *dataArr = self.dataArray[indexPath.section];
-            cell.weekLab.text = dataArr[indexPath.row-1];
-        }
-        
-    }
+//    if(indexPath.row == 0){
+//        cell.weekLab.text = self.weekArray[indexPath.row];
+//        cell.backgroundColor = [UIColor yellowColor];
+//    }else{
+//        if(indexPath.section >= self.dataArray.count){
+//        cell.weekLab.text = @"无数据";
+//        }else{
+//            NSArray *dataArr = self.dataArray[indexPath.section];
+//            cell.weekLab.text = dataArr[indexPath.row-1];
+//        }
+//        
+//    }
   
-    
+    cell.weekLab.text = self.weekArray[indexPath.row];
     return cell;
 }
 
@@ -170,11 +196,11 @@ static int course_days = 15;
 //点击item方法
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    WeekCollectionViewCell *cell = (WeekCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+//    WeekCollectionViewCell *cell = (WeekCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
 //    NSString *msg = cell.botlabel.text;
 //    NSLog(@"%@",msg);
     
-    NSLog(@"item:%ld",(long)indexPath.row);
+    NSLog(@"item:%ld",indexPath.row);
 }
 
 
